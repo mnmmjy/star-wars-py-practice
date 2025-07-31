@@ -24,6 +24,7 @@ BLACK = (0, 0, 0)
 YELLOW = (255, 255, 0)
 BLUE = (100, 150, 255)
 
+
 # 日本語フォントの読み込み
 def get_japanese_font():
     try:
@@ -51,6 +52,7 @@ def get_japanese_font():
     except:
         return None
 
+
 # フォント設定
 japanese_font_path = get_japanese_font()
 
@@ -68,6 +70,7 @@ else:
 # テキスト
 with open("story.txt", "r", encoding="utf-8") as f:
     story_text = f.read()
+
 
 def simple_transform(surface, perspective_factor=0.3):
     """軽量な台形変形＋サイズ変更（Pygameの標準機能のみ使用）"""
@@ -146,6 +149,7 @@ def simple_transform(surface, perspective_factor=0.3):
         print(f"変形エラー: {e}")
         return surface
 
+
 def create_fade_mask():
     """グラデーションマスクを作成（最適化版）"""
     mask = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -169,6 +173,7 @@ def create_fade_mask():
         pygame.draw.line(mask, color, (0, y), (SCREEN_WIDTH - 1, y))
     
     return mask
+
 
 class StarWarsScroll:
     def __init__(self):
@@ -198,28 +203,37 @@ class StarWarsScroll:
         
         current_y = SCREEN_HEIGHT  # 画面の高さ分下から開始
         
-        for line in self.lines:
-            if line.strip():
-                # フォントと色を選択
-                if "EPISODE" in line:
-                    font = font_title
-                    color = BLUE
-                elif "遥か彼方の銀河系で" in line:
-                    font = font_large
-                    color = BLUE
-                else:
-                    font = font_small
-                    color = YELLOW
+        for i, line in enumerate(self.lines):
+            line = line.strip()
+
+            # 空白行はスキップ（ただし余白として行高さ分進める）
+            if not line:
+                current_y += self.line_height
+                continue
+            # スタイル分岐
+            if i == 0:
+                # タイトル(1行目)
+                font = font_title
+                color = BLUE
+            elif i == 2:
+                # 副題(3行目)
+                font = font_large
+                color = BLUE
+            else:
+                # 本文(それ以外)
+                font = font_small
+                color = YELLOW
                 
-                # テキストをレンダリング
-                text_render = font.render(line.strip(), True, color)
+            # テキストをレンダリング
+            text_render = font.render(line, True, color)
                 
-                # 中央に配置
-                text_rect = text_render.get_rect()
-                text_rect.centerx = text_width // 2
-                text_rect.y = current_y
+            # 中央に配置
+            text_render = font.render(line, True, color)
+            text_rect = text_render.get_rect()
+            text_rect.centerx = text_width // 2
+            text_rect.y = current_y
                 
-                self.text_surface.blit(text_render, text_rect)
+            self.text_surface.blit(text_render, text_rect)
             
             current_y += self.line_height
     
@@ -260,6 +274,7 @@ class StarWarsScroll:
             # 範囲外の場合は空画面
             screen.fill(BLACK)
 
+
 def draw_stars():
     """背景の星を描画（最適化版）"""
     import random
@@ -272,6 +287,7 @@ def draw_stars():
         brightness = random.randint(100, 255)
         color = (brightness, brightness, brightness)
         pygame.draw.circle(screen, color, (x, y), 1)
+
 
 def main():
     clock = pygame.time.Clock()
@@ -317,5 +333,7 @@ def main():
     pygame.quit()
     sys.exit()
 
+
 if __name__ == "__main__":
     main()
+    
